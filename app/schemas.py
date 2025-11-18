@@ -72,6 +72,17 @@ class HashtagResponse(HashtagBase):
     model_config = {"from_attributes": True}
 
 
+class HashtagsLimited(BaseModel):
+    hashtags: List[str] = []
+
+    @field_validator("hashtags")
+    def validate_tags(cls, v):
+        if len(v or []) > 5:
+            raise ValueError("Too many hashtags. Maximum 5 tags allowed.")
+        return v
+
+
+
 # ------------------- Comments -------------------
 
 class CommentBase(BaseModel):
@@ -113,29 +124,34 @@ class RatingModel(RatingBase):
 
 # ------------------- Posts -------------------
 
-class PostBase(BaseModel):
+class PostBase(HashtagsLimited):
     id: int
     image_url: Optional[str] = Field(max_length=300, default=None)
     transform_url: Optional[str] = Field(max_length=450, default=None)
     title: str = Field(max_length=45)
     descr: str = Field(max_length=450)
-    hashtags: List[str] = []
+    # id: int
+    # image_url: Optional[str] = Field(max_length=300, default=None)
+    # transform_url: Optional[str] = Field(max_length=450, default=None)
+    # title: str = Field(max_length=45)
+    # descr: str = Field(max_length=450)
+    # hashtags: List[str] = []
 
-    @field_validator("hashtags")
-    def validate_tags(cls, v):
-        if len(v or []) > 5:
-            raise ValueError("Too many hashtags. Maximum 5 tags allowed.")
-        return v
+    # @field_validator("hashtags")
+    # def validate_tags(cls, v):
+    #     if len(v or []) > 5:
+    #         raise ValueError("Too many hashtags. Maximum 5 tags allowed.")
+    #     return v
 
 
 class PostModel(PostBase):
     pass
 
 
-class PostUpdate(BaseModel):
+class PostUpdate(HashtagsLimited):
     title: str = Field(max_length=45)
     descr: str = Field(max_length=450)
-    hashtags: List[str] = []
+    # hashtags: List[str] = []
 
 
 class PostResponse(PostBase):
