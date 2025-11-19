@@ -60,20 +60,27 @@ class HashtagBase(BaseModel):
     title: str = Field(max_length=50)
 
 
-class HashtagModel(HashtagBase):
-    model_config = {"from_attributes": True}
-
-
-class HashtagResponse(HashtagBase):
+class HashtagModel(BaseModel):
     id: int
+    title: str
     user_id: int
     created_at: datetime
 
     model_config = {"from_attributes": True}
 
 
+class HashtagResponse(HashtagModel):
+    pass
+    # id: int
+    # user_id: int
+    # created_at: datetime
+
+    # model_config = {"from_attributes": True}
+
+
 class HashtagsLimited(BaseModel):
-    hashtags: List[str] = []
+    hashtags: List[str] = Field(default_factory=list)
+    # hashtags: List[str] = []
 
     @field_validator("hashtags")
     def validate_tags(cls, v):
@@ -124,17 +131,17 @@ class RatingModel(RatingBase):
 
 # ------------------- Posts -------------------
 
-class PostBase(HashtagsLimited):
-    id: int
+# class PostBase(HashtagsLimited):
+#     id: int
+#     image_url: Optional[str] = Field(max_length=300, default=None)
+#     transform_url: Optional[str] = Field(max_length=450, default=None)
+#     title: str = Field(max_length=45)
+#     descr: str = Field(max_length=450)
+class PostBase(BaseModel):
     image_url: Optional[str] = Field(max_length=300, default=None)
     transform_url: Optional[str] = Field(max_length=450, default=None)
     title: str = Field(max_length=45)
     descr: str = Field(max_length=450)
-    # id: int
-    # image_url: Optional[str] = Field(max_length=300, default=None)
-    # transform_url: Optional[str] = Field(max_length=450, default=None)
-    # title: str = Field(max_length=45)
-    # descr: str = Field(max_length=450)
     # hashtags: List[str] = []
 
     # @field_validator("hashtags")
@@ -144,17 +151,18 @@ class PostBase(HashtagsLimited):
     #     return v
 
 
-class PostModel(PostBase):
+class PostModel(PostBase, HashtagsLimited):
     pass
 
 
-class PostUpdate(HashtagsLimited):
+class PostUpdate(PostBase):
     title: str = Field(max_length=45)
     descr: str = Field(max_length=450)
     # hashtags: List[str] = []
 
 
 class PostResponse(PostBase):
+    id: int
     hashtags: List[HashtagModel]
     avg_rating: Optional[float] = 0.0
     created_at: datetime

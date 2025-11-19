@@ -176,21 +176,36 @@ async def read_posts_with_title(post_title: str, db: Session = Depends(get_db),
 @router.get("/by_user_id/{user_id}", response_model=List[PostResponse])
 async def read_posts_by_user_id(user_id: int, db: Session = Depends(get_db),
             current_user: User = Depends(auth_service.get_current_user)):
-    """
-    The read_posts_by_user_id function returns all posts by a user with the given id.
-        The function takes in an integer user_id and returns a list of Post objects.
-    
-    :param user_id: int: Specify the user_id of the posts that we want to retrieve
-    :param db: Session: Pass the database connection to the repository
-    :param current_user: User: Get the user that is currently logged in
-    :return: A list of posts
-    """
-    posts = await repository_posts.get_posts_by_user_id(user_id, db)
-    if not posts:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+
+    posts = await repository_posts.get_posts_by_user_id(user_id, db) or []
+    # if not posts:
+    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+
+    result = []
     for post in posts:
-        post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags]
-    return posts
+        pr = PostResponse.from_orm(post)
+        pr.hashtags = pr.hashtags[:5]  # максимум 5
+        result.append(pr)
+
+    return result
+# @router.get("/by_user_id/{user_id}", response_model=List[PostResponse])
+# async def read_posts_by_user_id(user_id: int, db: Session = Depends(get_db),
+#             current_user: User = Depends(auth_service.get_current_user)):
+#     """
+#     The read_posts_by_user_id function returns all posts by a user with the given id.
+#         The function takes in an integer user_id and returns a list of Post objects.
+    
+#     :param user_id: int: Specify the user_id of the posts that we want to retrieve
+#     :param db: Session: Pass the database connection to the repository
+#     :param current_user: User: Get the user that is currently logged in
+#     :return: A list of posts
+#     """
+#     posts = await repository_posts.get_posts_by_user_id(user_id, db)
+#     if not posts:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+#     for post in posts:
+#         post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags]
+#     return posts
 
 
 @router.get("/by_username/{user_name}", response_model=List[PostResponse])
