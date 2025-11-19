@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, status, UploadFile, File,
 from typing import List
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
-from app.database.connect_db import get_db
+from app.database.connect_db import get_db 
 from app.database.models import User, UserRoleEnum
 from app.schemas import CommentModel, PostModel, PostResponse, PostUpdate
 from app.repository import posts as repository_posts
@@ -18,47 +18,92 @@ allowed_get_all_posts = RoleChecker([UserRoleEnum.admin])
 
 
 
-@router.post("/new/", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
-async def create_post(request: Request, title: str = Form(None), descr: str = Form(None),
-                    hashtags: List = Form(None), file: UploadFile = File(None),
-                    db: Session = Depends(get_db), 
-                    current_user: User = Depends(auth_service.get_current_user)):
-    """
-    The create_post function creates a new post in the database.
-        The function takes in a title, description, hashtags and an image file as parameters.
-        It then uses these to create a new post object which is added to the database.
+@router.post("/new/", response_model=PostResponse)
+async def create_new_post(
+    request: Request,
+    title: str,
+    descr: str,
+    hashtags: List[str],
+    file: UploadFile,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(auth_service.get_current_user)
+):
+    # Перевірка на максимум 5 хештегів
+    if len(hashtags) > 5:
+        # Викидаємо HTTPException ДО створення поста
+        raise HTTPException(
+            status_code=400,
+            detail="You can only add up to 5 hashtags per post"
+        )
     
-    :param request: Request: Get the request object
-    :param title: str: Get the title of the post from the request body
-    :param descr: str: Get the description of the post from the request
-    :param hashtags: List: Get the list of hashtags from the request body
-    :param file: UploadFile: Get the file from the request
-    :param db: Session: Get the database session, which is used to perform sql queries
-    :param current_user: User: Get the user who is currently logged in
-    :return: A dict, which is a json object
-    """
-    return await repository_posts.create_post(request, title, descr, hashtags, file, db, current_user)
+    post = await repository_posts.create_post(request, title, descr, hashtags, file, db, current_user)
+
+    post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags]
+
+    return post
+
+# @router.post("/new/", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
+# async def create_post(request: Request, title: str = Form(None), descr: str = Form(None),
+#                     hashtags: List = Form(None), file: UploadFile = File(None),
+#                     db: Session = Depends(get_db), 
+#                     current_user: User = Depends(auth_service.get_current_user)):
+#     """
+#     The create_post function creates a new post in the database.
+#         The function takes in a title, description, hashtags and an image file as parameters.
+#         It then uses these to create a new post object which is added to the database.
+    
+#     :param request: Request: Get the request object
+#     :param title: str: Get the title of the post from the request body
+#     :param descr: str: Get the description of the post from the request
+#     :param hashtags: List: Get the list of hashtags from the request body
+#     :param file: UploadFile: Get the file from the request
+#     :param db: Session: Get the database session, which is used to perform sql queries
+#     :param current_user: User: Get the user who is currently logged in
+#     :return: A dict, which is a json object
+#     """
+#     return await repository_posts.create_post(request, title, descr, hashtags, file, db, current_user)
+
+
 
 
 @router.get("/my_posts", response_model=List[PostResponse])
-async def read_all_user_posts(skip: int = 0, limit: int = 100, current_user: User = Depends(auth_service.get_current_user), 
+async def read_all_user_posts(skip: int = 0, limit: int = 100,
+                              current_user: User = Depends(auth_service.get_current_user), 
                               db: Session = Depends(get_db)):
-    """
-    The read_all_user_posts function returns all posts for a given user.
-        The function takes in the following parameters:
-            skip (int): The number of posts to skip before returning results. Default is 0.
-            limit (int): The maximum number of posts to return per page. Default is 100, max is 1000.
-    
-    :param skip: int: Skip a number of posts
-    :param limit: int: Limit the number of posts returned
-    :param current_user: User: Get the current user from the database
-    :param db: Session: Pass the database session to the repository layer
-    :return: A list of posts
-    """
+
     posts = await repository_posts.get_my_posts(skip, limit, current_user, db)
     if posts is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
-    return posts
+
+    # Перетворюємо ORM -> Pydantic вручну, обрізаючи хештеги до 5
+    result = []
+    for post in posts:
+        pr = PostResponse.from_orm(post)
+        pr.hashtags = pr.hashtags[:5]  # максимум 5
+        result.append(pr)
+
+    return result
+# @router.get("/my_posts", response_model=List[PostResponse])
+# async def read_all_user_posts(skip: int = 0, limit: int = 100, current_user: User = Depends(auth_service.get_current_user), 
+#                               db: Session = Depends(get_db)):
+#     """
+#     The read_all_user_posts function returns all posts for a given user.
+#         The function takes in the following parameters:
+#             skip (int): The number of posts to skip before returning results. Default is 0.
+#             limit (int): The maximum number of posts to return per page. Default is 100, max is 1000.
+    
+#     :param skip: int: Skip a number of posts
+#     :param limit: int: Limit the number of posts returned
+#     :param current_user: User: Get the current user from the database
+#     :param db: Session: Pass the database session to the repository layer
+#     :return: A list of posts
+#     """
+#     posts = await repository_posts.get_my_posts(skip, limit, current_user, db)
+#     if posts is None:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+#     for post in posts:
+#         post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags][:5]
+#     return posts
 
 
 @router.get("/all", response_model=List[PostResponse], dependencies=[Depends(allowed_get_all_posts)])
@@ -83,6 +128,8 @@ async def read_all_posts(skip: int = 0, limit: int = 100,
     posts = await repository_posts.get_all_posts(skip, limit, db)
     if posts is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+    for post in posts:
+        post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags]
     return posts
 
 
@@ -102,6 +149,7 @@ async def read_post_by_id(post_id: int, db: Session = Depends(get_db),
     post = await repository_posts.get_post_by_id(post_id, current_user, db)
     if post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+    post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags]
     return post
 
 
@@ -120,6 +168,8 @@ async def read_posts_with_title(post_title: str, db: Session = Depends(get_db),
     posts = await repository_posts.get_posts_by_title(post_title, current_user, db)
     if not posts:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+    for post in posts:
+        post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags]
     return posts
 
 
@@ -138,6 +188,8 @@ async def read_posts_by_user_id(user_id: int, db: Session = Depends(get_db),
     posts = await repository_posts.get_posts_by_user_id(user_id, db)
     if not posts:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+    for post in posts:
+        post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags]
     return posts
 
 
@@ -157,6 +209,8 @@ async def read_post_with_user_username(user_name: str, db: Session = Depends(get
     posts = await repository_posts.get_posts_by_username(user_name, db)
     if not posts:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+    for post in posts:
+        post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags]
     return posts
 
 
@@ -176,6 +230,8 @@ async def read_post_with_hashtag(hashtag_name: str, db: Session = Depends(get_db
     posts = await repository_posts.get_posts_with_hashtag(hashtag_name, db)
     if not posts:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+    for post in posts:
+        post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags]
     return posts
 
 
@@ -211,6 +267,8 @@ async def read_posts_by_keyword(keyword: str, db: Session = Depends(get_db),
     posts = await repository_posts.get_post_by_keyword(keyword, db)
     if not posts:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+    for post in posts:
+        post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags]
     return posts
 
 @router.put("/{post_id}", response_model=PostResponse)
@@ -233,6 +291,7 @@ async def update_post(body: PostUpdate, post_id: int, db: Session = Depends(get_
     post = await repository_posts.update_post(post_id, body, current_user, db)
     if post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+    post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags]
     return post
 
 
@@ -252,6 +311,7 @@ async def remove_post(post_id: int, db: Session = Depends(get_db),
     post = await repository_posts.remove_post(post_id, current_user, db)
     if post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+    post.hashtags = [h.name if hasattr(h, 'name') else h for h in post.hashtags]
     return post
 
 
