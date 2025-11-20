@@ -29,6 +29,8 @@ class Settings(BaseSettings):
 
     # -------------------- CONFIG --------------------
     model_config = SettingsConfigDict(
+        env_file=".env.local", 
+        env_file_encoding="utf-8",
         extra="allow"  # дозволяє додаткові змінні середовища
     )
 
