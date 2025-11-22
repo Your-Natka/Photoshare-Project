@@ -13,9 +13,10 @@ WORKDIR /app
 # =========================
 # Встановлення системних залежностей
 # =========================
+# Бібліотеки для роботи з PostgreSQL
 RUN apt-get update && apt-get install -y \
-    build-essential \   # Для компіляції C/C++ пакетів (потрібно для деяких Python-бібліотек)
-    libpq-dev \         # Бібліотеки для роботи з PostgreSQL
+    build-essential \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 # Очищаємо кеш apt після встановлення, щоб зменшити розмір образу
 
