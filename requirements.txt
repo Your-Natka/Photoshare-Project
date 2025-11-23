@@ -1,4 +1,5 @@
 alembic
+aiosqlite>=0.20.0
 bcrypt==3.2.2
 cloudinary
 django
@@ -14,6 +15,7 @@ pypng
 python-dotenv
 python-jose[cryptography]
 python-multipart
+pytest-mock
 pydantic
 pydantic-settings
 pytest
