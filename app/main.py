@@ -50,6 +50,7 @@ def read_root():
 # --------------------------------------------
 # STARTUP EVENT
 # --------------------------------------------
+redis_cache: redis.Redis | None = None
 @app.on_event("startup")
 async def startup():
     """
@@ -58,20 +59,19 @@ async def startup():
     Використовує REDIS_URL із налаштувань .env.
     Перевіряє доступність Redis через ping.
     """
+    global redis_cache
     redis_cache = redis.from_url(
         settings.redis_url,
         encoding="utf-8",
         decode_responses=True
     )
     try:
-        await redis_cache.ping()  # Перевірка доступності Redis
+        await redis_cache.ping()
         print("Redis connected successfully.")
     except Exception as e:
         print(f"Redis connection error: {e}")
         raise
-
     await FastAPILimiter.init(redis_cache)
-    print("FastAPILimiter initialized.")
 
 
 # --------------------------------------------
