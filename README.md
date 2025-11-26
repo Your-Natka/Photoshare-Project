@@ -31,9 +31,6 @@ photoshare-project-1    personal        deployed        Nov 24 2025 18:51
 
 flyctl secrets list
 
-Після цього перевіряємо:
-flyctl secrets list
-
 ✅ КРОК 5. Перевіряємо PostgreSQL у Neon
 
 Зайди сюди: https://console.neon.tech
@@ -93,10 +90,6 @@ SQLALCHEMY_DATABASE_URL=postgresql://neondb_owner:npg_8LmWbOHC3syT@ep-round-snow
 Команда:
 
 psql "postgresql://neondb_owner:npg_8LmWbOHC3syT@ep-round-snow-adrv766l-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-
-psql "postgresql://neondb_owner:npg_8LmWbOHC3syT@ep-round-snow-adrv766l-
-pooler.c-2.us-east-1.aws.neon.tech/neondb?
-sslmode=require&channel_binding=require"
 
 Якщо все підключилось — отримаєш промпт:
 

@@ -184,3 +184,6 @@ async def remove_post(post_id: int, db: Session = Depends(get_db),
     if post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
     return serialize_hashtags(post)
+
+async def rate_limiter(*args, **kwargs):
+    return True

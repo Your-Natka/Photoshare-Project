@@ -183,3 +183,6 @@ async def request_email(
 
     background_tasks.add_task(send_email, user.email, user.username, request.base_url)
     return {"message": CHECK_YOUR_EMAIL}
+
+async def rate_limiter():
+    return True
