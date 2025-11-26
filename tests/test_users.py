@@ -64,7 +64,7 @@ def mock_db():
 # TESTS
 # --------------------------------------
 @pytest.mark.asyncio
-async def test_register_user(client):
+async def test_register_user(client: AsyncClient):
     response = await client.post("/api/auth/register", json={
         "username": "user1",
         "email": "user1@example.com",
@@ -73,7 +73,7 @@ async def test_register_user(client):
     assert response.status_code == 201 or response.status_code == 200
 
 @pytest.mark.asyncio
-async def test_login_user(client):
+async def test_login_user(client: AsyncClient):
     response = await client.post("/api/auth/login", json={
         "email": "user1@example.com",
         "password": "password123"

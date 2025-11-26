@@ -33,7 +33,7 @@ async def test_register_existing_email(client: AsyncClient):
 @pytest.mark.asyncio
 async def test_login_user(client: AsyncClient):
     # Спершу реєструємо
-    await client.post("/api/auth/register", json={
+    response = await client.post("/api/auth/register", json={
         "username": "user1",
         "email": "user1@example.com",
         "password": "password123"
@@ -49,7 +49,7 @@ async def test_login_user(client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_login_wrong_password(client: AsyncClient):
-    await client.post("/api/auth/register", json={
+    response = await client.post("/api/auth/register", json={
         "username": "user1",
         "email": "user1@example.com",
         "password": "password123"
@@ -63,7 +63,7 @@ async def test_login_wrong_password(client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_refresh_token(client: AsyncClient):
-    await client.post("/api/auth/register", json={
+    response = await client.post("/api/auth/register", json={
         "username": "user1",
         "email": "user1@example.com",
         "password": "password123"
