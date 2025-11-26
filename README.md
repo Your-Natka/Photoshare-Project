@@ -31,9 +31,6 @@ photoshare-project-1    personal        deployed        Nov 24 2025 18:51
 
 flyctl secrets list
 
-Після цього перевіряємо:
-flyctl secrets list
-
 ✅ КРОК 5. Перевіряємо PostgreSQL у Neon
 
 Зайди сюди: https://console.neon.tech
