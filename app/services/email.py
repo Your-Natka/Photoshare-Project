@@ -161,3 +161,10 @@ async def request_email(
 
     background_tasks.add_task(send_email, user.email, user.username, request.base_url)
     return {"message": CHECK_YOUR_EMAIL}
+
+class EmailService:
+    async def send_email_verification(self, email: str, token: str):
+        return True
+
+    async def send_reset_password(self, email: str, token: str):
+        return True

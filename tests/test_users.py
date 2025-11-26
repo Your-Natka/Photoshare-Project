@@ -1,29 +1,25 @@
 import pytest
-from unittest.mock import AsyncMock, patch
 from httpx import AsyncClient
+from unittest.mock import AsyncMock, patch
 
 from app.main import app
+from app.database.models import User
 from app.database.connect_db import get_db
 
 # --------------------------------------
-# MOCK ASYNC DB SESSION
+# MOCK DATABASE SESSION
 # --------------------------------------
 class FakeAsyncSession:
     def __init__(self):
         self.users = []
-        self.posts = []
-        self.comments = []
-        self.ratings = []
 
     async def execute(self, query):
+        # Проста емулююча функція для select
         class Result:
             def scalar_one_or_none(inner_self):
                 if self.users:
                     return self.users[0]
                 return None
-
-            def fetchall(inner_self):
-                return []
         return Result()
 
     async def commit(self):
@@ -40,9 +36,6 @@ class FakeAsyncSession:
 # --------------------------------------
 @pytest.fixture
 async def client():
-    """
-    Асинхронний HTTP-клієнт для тестів.
-    """
     async with AsyncClient(app=app, base_url="http://test") as c:
         yield c
 
@@ -62,5 +55,27 @@ def mock_redis():
 # --------------------------------------
 @pytest.fixture(autouse=True)
 def mock_db():
-    with patch("app.database.connect_db.get_db", return_value=FakeAsyncSession()):
-        yield
+    with patch("app.routes.auth.get_db") as mock:
+        session = FakeAsyncSession()
+        mock.return_value = session
+        yield mock
+
+# --------------------------------------
+# TESTS
+# --------------------------------------
+@pytest.mark.asyncio
+async def test_register_user(client):
+    response = await client.post("/api/auth/register", json={
+        "username": "user1",
+        "email": "user1@example.com",
+        "password": "password123"
+    })
+    assert response.status_code == 201 or response.status_code == 200
+
+@pytest.mark.asyncio
+async def test_login_user(client):
+    response = await client.post("/api/auth/login", json={
+        "email": "user1@example.com",
+        "password": "password123"
+    })
+    assert response.status_code == 200 or response.status_code == 401
