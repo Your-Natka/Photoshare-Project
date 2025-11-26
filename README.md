@@ -91,10 +91,6 @@ SQLALCHEMY_DATABASE_URL=postgresql://neondb_owner:npg_8LmWbOHC3syT@ep-round-snow
 
 psql "postgresql://neondb_owner:npg_8LmWbOHC3syT@ep-round-snow-adrv766l-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
-psql "postgresql://neondb_owner:npg_8LmWbOHC3syT@ep-round-snow-adrv766l-
-pooler.c-2.us-east-1.aws.neon.tech/neondb?
-sslmode=require&channel_binding=require"
-
 Якщо все підключилось — отримаєш промпт:
 
 neondb=>
