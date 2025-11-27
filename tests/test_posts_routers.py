@@ -6,7 +6,7 @@ from datetime import datetime
 
 from app.main import app
 from app.database.models import User
-from app.schemas import CommentBase, CommentResponse
+from app.schemas import CommentResponse
 
 
 # ----------------------------------------------------
@@ -38,17 +38,16 @@ def build_comment(id=1, text="Text", user_id=1, post_id=1, now=None):
 # ----------------------------------------------------
 @pytest.mark.asyncio
 async def test_create_comment(mocker, mock_user, now):
-    # Мокаємо поточного користувача
+    # Мокаємо поточного користувача асинхронно
     mocker.patch(
         "app.services.auth.auth_service.get_current_user",
-        return_value=mock_user
+        new=AsyncMock(return_value=mock_user)
     )
 
     # Мокаємо репозиторій
     mocker.patch(
         "app.repository.comments.create_comment",
-        new_callable=AsyncMock,
-        return_value=build_comment(text="Test comment", now=now)
+        new=AsyncMock(return_value=build_comment(text="Test comment", now=now))
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -63,13 +62,12 @@ async def test_create_comment(mocker, mock_user, now):
 async def test_edit_comment(mocker, mock_user, now):
     mocker.patch(
         "app.services.auth.auth_service.get_current_user",
-        return_value=mock_user
+        new=AsyncMock(return_value=mock_user)
     )
 
     mocker.patch(
         "app.repository.comments.edit_comment",
-        new_callable=AsyncMock,
-        return_value=build_comment(text="Updated", now=now)
+        new=AsyncMock(return_value=build_comment(text="Updated", now=now))
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -84,13 +82,12 @@ async def test_edit_comment(mocker, mock_user, now):
 async def test_delete_comment(mocker, mock_user, now):
     mocker.patch(
         "app.services.auth.auth_service.get_current_user",
-        return_value=mock_user
+        new=AsyncMock(return_value=mock_user)
     )
 
     mocker.patch(
         "app.repository.comments.delete_comment",
-        new_callable=AsyncMock,
-        return_value=build_comment(text="Deleted", now=now)
+        new=AsyncMock(return_value=build_comment(text="Deleted", now=now))
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -104,13 +101,12 @@ async def test_delete_comment(mocker, mock_user, now):
 async def test_single_comment(mocker, mock_user, now):
     mocker.patch(
         "app.services.auth.auth_service.get_current_user",
-        return_value=mock_user
+        new=AsyncMock(return_value=mock_user)
     )
 
     mocker.patch(
         "app.repository.comments.show_single_comment",
-        new_callable=AsyncMock,
-        return_value=build_comment(text="Single", now=now)
+        new=AsyncMock(return_value=build_comment(text="Single", now=now))
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -124,16 +120,15 @@ async def test_single_comment(mocker, mock_user, now):
 async def test_by_user_comments(mocker, mock_user, now):
     mocker.patch(
         "app.services.auth.auth_service.get_current_user",
-        return_value=mock_user
+        new=AsyncMock(return_value=mock_user)
     )
 
     mocker.patch(
         "app.repository.comments.show_user_comments",
-        new_callable=AsyncMock,
-        return_value=[
+        new=AsyncMock(return_value=[
             build_comment(id=1, text="C1", now=now),
             build_comment(id=2, text="C2", now=now)
-        ]
+        ])
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -148,13 +143,12 @@ async def test_by_user_comments(mocker, mock_user, now):
 async def test_by_user_post_comments(mocker, mock_user, now):
     mocker.patch(
         "app.services.auth.auth_service.get_current_user",
-        return_value=mock_user
+        new=AsyncMock(return_value=mock_user)
     )
 
     mocker.patch(
         "app.repository.comments.show_user_post_comments",
-        new_callable=AsyncMock,
-        return_value=[build_comment(text="Post comment", now=now)]
+        new=AsyncMock(return_value=[build_comment(text="Post comment", now=now)])
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
