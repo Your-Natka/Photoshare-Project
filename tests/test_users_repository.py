@@ -1,4 +1,5 @@
 import pytest
+import pytest_asyncio
 from httpx import AsyncClient
 from app.main import app
 from app.repository import users as repository
@@ -39,7 +40,8 @@ def fake_db():
     return FakeAsyncSession()
 
 # ---------------- HTTP client fixture ----------------
-@pytest.fixture
+# @pytest.fixture
+@pytest_asyncio.fixture
 async def client():
     async with AsyncClient(app=app, base_url="http://test") as ac:
         yield ac
@@ -63,7 +65,7 @@ async def test_get_user_by_email_directly(fake_db):
 
 # ---------------- API tests ----------------
 @pytest.mark.asyncio
-async def test_register_user_api(client):
+async def test_register_user_api(client: AsyncClient):
     response = await client.post("/api/auth/signup", json={
         "username": "user1",
         "email": "user1@example.com",
