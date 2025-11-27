@@ -1,0 +1,422 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transform Schemas &mdash; PhotoShare 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Schemas" href="../app_schemas.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PhotoShare
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../app_main.html">Main Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_database.html">Database Layer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_repository.html">Repository Layer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_routers.html">Routers (API endpoints)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_services.html">Services Layer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_schemas.html">Schemas</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Transform Schemas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#app.tramsform_schemas.TransformCircleModel"><code class="docutils literal notranslate"><span class="pre">TransformCircleModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformCircleModel.use_filter"><code class="docutils literal notranslate"><span class="pre">TransformCircleModel.use_filter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformCircleModel.height"><code class="docutils literal notranslate"><span class="pre">TransformCircleModel.height</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformCircleModel.width"><code class="docutils literal notranslate"><span class="pre">TransformCircleModel.width</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformCircleModel.model_config"><code class="docutils literal notranslate"><span class="pre">TransformCircleModel.model_config</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#app.tramsform_schemas.TransformEffectModel"><code class="docutils literal notranslate"><span class="pre">TransformEffectModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformEffectModel.use_filter"><code class="docutils literal notranslate"><span class="pre">TransformEffectModel.use_filter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformEffectModel.art_audrey"><code class="docutils literal notranslate"><span class="pre">TransformEffectModel.art_audrey</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformEffectModel.art_zorro"><code class="docutils literal notranslate"><span class="pre">TransformEffectModel.art_zorro</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformEffectModel.cartoonify"><code class="docutils literal notranslate"><span class="pre">TransformEffectModel.cartoonify</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformEffectModel.blur"><code class="docutils literal notranslate"><span class="pre">TransformEffectModel.blur</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformEffectModel.model_config"><code class="docutils literal notranslate"><span class="pre">TransformEffectModel.model_config</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#app.tramsform_schemas.TransformResizeModel"><code class="docutils literal notranslate"><span class="pre">TransformResizeModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformResizeModel.use_filter"><code class="docutils literal notranslate"><span class="pre">TransformResizeModel.use_filter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformResizeModel.crop"><code class="docutils literal notranslate"><span class="pre">TransformResizeModel.crop</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformResizeModel.fill"><code class="docutils literal notranslate"><span class="pre">TransformResizeModel.fill</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformResizeModel.height"><code class="docutils literal notranslate"><span class="pre">TransformResizeModel.height</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformResizeModel.width"><code class="docutils literal notranslate"><span class="pre">TransformResizeModel.width</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformResizeModel.model_config"><code class="docutils literal notranslate"><span class="pre">TransformResizeModel.model_config</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#app.tramsform_schemas.TransformTextModel"><code class="docutils literal notranslate"><span class="pre">TransformTextModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformTextModel.use_filter"><code class="docutils literal notranslate"><span class="pre">TransformTextModel.use_filter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformTextModel.font_size"><code class="docutils literal notranslate"><span class="pre">TransformTextModel.font_size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformTextModel.text"><code class="docutils literal notranslate"><span class="pre">TransformTextModel.text</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformTextModel.model_config"><code class="docutils literal notranslate"><span class="pre">TransformTextModel.model_config</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#app.tramsform_schemas.TransformRotateModel"><code class="docutils literal notranslate"><span class="pre">TransformRotateModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformRotateModel.use_filter"><code class="docutils literal notranslate"><span class="pre">TransformRotateModel.use_filter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformRotateModel.width"><code class="docutils literal notranslate"><span class="pre">TransformRotateModel.width</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformRotateModel.degree"><code class="docutils literal notranslate"><span class="pre">TransformRotateModel.degree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformRotateModel.model_config"><code class="docutils literal notranslate"><span class="pre">TransformRotateModel.model_config</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#app.tramsform_schemas.TransformBodyModel"><code class="docutils literal notranslate"><span class="pre">TransformBodyModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformBodyModel.circle"><code class="docutils literal notranslate"><span class="pre">TransformBodyModel.circle</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformBodyModel.effect"><code class="docutils literal notranslate"><span class="pre">TransformBodyModel.effect</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformBodyModel.resize"><code class="docutils literal notranslate"><span class="pre">TransformBodyModel.resize</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformBodyModel.text"><code class="docutils literal notranslate"><span class="pre">TransformBodyModel.text</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformBodyModel.rotate"><code class="docutils literal notranslate"><span class="pre">TransformBodyModel.rotate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.tramsform_schemas.TransformBodyModel.model_config"><code class="docutils literal notranslate"><span class="pre">TransformBodyModel.model_config</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PhotoShare</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Transform Schemas</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/app/transform_schemas.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-app.tramsform_schemas">
+<span id="transform-schemas"></span><h1>Transform Schemas<a class="headerlink" href="#module-app.tramsform_schemas" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformCircleModel">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.tramsform_schemas.</span></span><span class="sig-name descname"><span class="pre">TransformCircleModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/tramsform_schemas.html#TransformCircleModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.tramsform_schemas.TransformCircleModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Параметри для круглої трансформації зображення.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>use_filter</strong> (<em>bool</em>)</p></li>
+<li><p><strong>height</strong> (<em>int</em>)</p></li>
+<li><p><strong>width</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformCircleModel.use_filter">
+<span class="sig-name descname"><span class="pre">use_filter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformCircleModel.use_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformCircleModel.height">
+<span class="sig-name descname"><span class="pre">height</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformCircleModel.height" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformCircleModel.width">
+<span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformCircleModel.width" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformCircleModel.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformCircleModel.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformEffectModel">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.tramsform_schemas.</span></span><span class="sig-name descname"><span class="pre">TransformEffectModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">art_audrey</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">art_zorro</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cartoonify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blur</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/tramsform_schemas.html#TransformEffectModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.tramsform_schemas.TransformEffectModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Параметри для застосування ефектів до зображення.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>use_filter</strong> (<em>bool</em>)</p></li>
+<li><p><strong>art_audrey</strong> (<em>bool</em>)</p></li>
+<li><p><strong>art_zorro</strong> (<em>bool</em>)</p></li>
+<li><p><strong>cartoonify</strong> (<em>bool</em>)</p></li>
+<li><p><strong>blur</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformEffectModel.use_filter">
+<span class="sig-name descname"><span class="pre">use_filter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformEffectModel.use_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformEffectModel.art_audrey">
+<span class="sig-name descname"><span class="pre">art_audrey</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformEffectModel.art_audrey" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformEffectModel.art_zorro">
+<span class="sig-name descname"><span class="pre">art_zorro</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformEffectModel.art_zorro" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformEffectModel.cartoonify">
+<span class="sig-name descname"><span class="pre">cartoonify</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformEffectModel.cartoonify" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformEffectModel.blur">
+<span class="sig-name descname"><span class="pre">blur</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformEffectModel.blur" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformEffectModel.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformEffectModel.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformResizeModel">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.tramsform_schemas.</span></span><span class="sig-name descname"><span class="pre">TransformResizeModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/tramsform_schemas.html#TransformResizeModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.tramsform_schemas.TransformResizeModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Параметри для зміни розмірів зображення.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>use_filter</strong> (<em>bool</em>)</p></li>
+<li><p><strong>crop</strong> (<em>bool</em>)</p></li>
+<li><p><strong>fill</strong> (<em>bool</em>)</p></li>
+<li><p><strong>height</strong> (<em>int</em>)</p></li>
+<li><p><strong>width</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformResizeModel.use_filter">
+<span class="sig-name descname"><span class="pre">use_filter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformResizeModel.use_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformResizeModel.crop">
+<span class="sig-name descname"><span class="pre">crop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformResizeModel.crop" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformResizeModel.fill">
+<span class="sig-name descname"><span class="pre">fill</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformResizeModel.fill" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformResizeModel.height">
+<span class="sig-name descname"><span class="pre">height</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformResizeModel.height" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformResizeModel.width">
+<span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformResizeModel.width" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformResizeModel.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformResizeModel.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformTextModel">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.tramsform_schemas.</span></span><span class="sig-name descname"><span class="pre">TransformTextModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">70</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/tramsform_schemas.html#TransformTextModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.tramsform_schemas.TransformTextModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Параметри для додавання тексту на зображення.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>use_filter</strong> (<em>bool</em>)</p></li>
+<li><p><strong>font_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>text</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformTextModel.use_filter">
+<span class="sig-name descname"><span class="pre">use_filter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformTextModel.use_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformTextModel.font_size">
+<span class="sig-name descname"><span class="pre">font_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformTextModel.font_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformTextModel.text">
+<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformTextModel.text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformTextModel.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformTextModel.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformRotateModel">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.tramsform_schemas.</span></span><span class="sig-name descname"><span class="pre">TransformRotateModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">45</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/tramsform_schemas.html#TransformRotateModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.tramsform_schemas.TransformRotateModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Параметри для обертання зображення.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>use_filter</strong> (<em>bool</em>)</p></li>
+<li><p><strong>width</strong> (<em>int</em>)</p></li>
+<li><p><strong>degree</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformRotateModel.use_filter">
+<span class="sig-name descname"><span class="pre">use_filter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformRotateModel.use_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformRotateModel.width">
+<span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformRotateModel.width" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformRotateModel.degree">
+<span class="sig-name descname"><span class="pre">degree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformRotateModel.degree" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformRotateModel.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformRotateModel.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformBodyModel">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.tramsform_schemas.</span></span><span class="sig-name descname"><span class="pre">TransformBodyModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">circle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">effect</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/tramsform_schemas.html#TransformBodyModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.tramsform_schemas.TransformBodyModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Основна модель для трансформацій зображення.
+Включає всі можливі види трансформацій: коло, ефекти, зміна розмірів, текст, обертання.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>circle</strong> (<a class="reference internal" href="../app_schemas.html#app.tramsform_schemas.TransformCircleModel" title="app.tramsform_schemas.TransformCircleModel"><em>TransformCircleModel</em></a>)</p></li>
+<li><p><strong>effect</strong> (<a class="reference internal" href="../app_schemas.html#app.tramsform_schemas.TransformEffectModel" title="app.tramsform_schemas.TransformEffectModel"><em>TransformEffectModel</em></a>)</p></li>
+<li><p><strong>resize</strong> (<a class="reference internal" href="../app_schemas.html#app.tramsform_schemas.TransformResizeModel" title="app.tramsform_schemas.TransformResizeModel"><em>TransformResizeModel</em></a>)</p></li>
+<li><p><strong>text</strong> (<a class="reference internal" href="../app_schemas.html#app.tramsform_schemas.TransformTextModel" title="app.tramsform_schemas.TransformTextModel"><em>TransformTextModel</em></a>)</p></li>
+<li><p><strong>rotate</strong> (<a class="reference internal" href="../app_schemas.html#app.tramsform_schemas.TransformRotateModel" title="app.tramsform_schemas.TransformRotateModel"><em>TransformRotateModel</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformBodyModel.circle">
+<span class="sig-name descname"><span class="pre">circle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../app_schemas.html#app.tramsform_schemas.TransformCircleModel" title="app.tramsform_schemas.TransformCircleModel"><span class="pre">TransformCircleModel</span></a></em><a class="headerlink" href="#app.tramsform_schemas.TransformBodyModel.circle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformBodyModel.effect">
+<span class="sig-name descname"><span class="pre">effect</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../app_schemas.html#app.tramsform_schemas.TransformEffectModel" title="app.tramsform_schemas.TransformEffectModel"><span class="pre">TransformEffectModel</span></a></em><a class="headerlink" href="#app.tramsform_schemas.TransformBodyModel.effect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformBodyModel.resize">
+<span class="sig-name descname"><span class="pre">resize</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../app_schemas.html#app.tramsform_schemas.TransformResizeModel" title="app.tramsform_schemas.TransformResizeModel"><span class="pre">TransformResizeModel</span></a></em><a class="headerlink" href="#app.tramsform_schemas.TransformBodyModel.resize" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformBodyModel.text">
+<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../app_schemas.html#app.tramsform_schemas.TransformTextModel" title="app.tramsform_schemas.TransformTextModel"><span class="pre">TransformTextModel</span></a></em><a class="headerlink" href="#app.tramsform_schemas.TransformBodyModel.text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformBodyModel.rotate">
+<span class="sig-name descname"><span class="pre">rotate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../app_schemas.html#app.tramsform_schemas.TransformRotateModel" title="app.tramsform_schemas.TransformRotateModel"><span class="pre">TransformRotateModel</span></a></em><a class="headerlink" href="#app.tramsform_schemas.TransformBodyModel.rotate" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.tramsform_schemas.TransformBodyModel.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.tramsform_schemas.TransformBodyModel.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../app_schemas.html" class="btn btn-neutral float-left" title="Schemas" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Natala Bodnarcuk.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

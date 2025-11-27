@@ -28,4 +28,5 @@ redis
 setuptools
 sqlalchemy
 sqlalchemy-utils
+sphinx_rtd_theme
 uvicorn

@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Repository Layer &mdash; PhotoShare 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Routers (API endpoints)" href="app_routers.html" />
+    <link rel="prev" title="App Database" href="app_database.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PhotoShare
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">PhotoShare Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="app_main.html">Main Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_schemas.html">Schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_services.html">Services Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_database.html">App Database</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Repository Layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#users-repository">Users Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#posts-repository">Posts Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#comments-repository">Comments Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-app.repository.ratings">Ratings Repository</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#app.repository.ratings.create_rate"><code class="docutils literal notranslate"><span class="pre">create_rate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.repository.ratings.edit_rate"><code class="docutils literal notranslate"><span class="pre">edit_rate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.repository.ratings.delete_rate"><code class="docutils literal notranslate"><span class="pre">delete_rate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.repository.ratings.show_ratings"><code class="docutils literal notranslate"><span class="pre">show_ratings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.repository.ratings.show_my_ratings"><code class="docutils literal notranslate"><span class="pre">show_my_ratings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.repository.ratings.user_rate_post"><code class="docutils literal notranslate"><span class="pre">user_rate_post()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hashtags-repository">Hashtags Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transformations-repository">Transformations Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app_routers.html">Routers (API endpoints)</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PhotoShare</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">PhotoShare Modules</a></li>
+      <li class="breadcrumb-item active">Repository Layer</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/app_repository.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="repository-layer">
+<h1>Repository Layer<a class="headerlink" href="#repository-layer" title="Link to this heading"></a></h1>
+<section id="users-repository">
+<h2>Users Repository<a class="headerlink" href="#users-repository" title="Link to this heading"></a></h2>
+</section>
+<section id="posts-repository">
+<h2>Posts Repository<a class="headerlink" href="#posts-repository" title="Link to this heading"></a></h2>
+</section>
+<section id="comments-repository">
+<h2>Comments Repository<a class="headerlink" href="#comments-repository" title="Link to this heading"></a></h2>
+</section>
+<section id="module-app.repository.ratings">
+<span id="ratings-repository"></span><h2>Ratings Repository<a class="headerlink" href="#module-app.repository.ratings" title="Link to this heading"></a></h2>
+<p>ratings.py — функції для роботи з оцінками (rating) постів у PhotoShare API.</p>
+<p>Містить CRUD-операції над рейтингами, перевірку прав користувача і обмеження голосування.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.repository.ratings.create_rate">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.repository.ratings.</span></span><span class="sig-name descname"><span class="pre">create_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">post_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/repository/ratings.html#create_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.repository.ratings.create_rate" title="Link to this definition"></a></dt>
+<dd><p>Створює новий рейтинг для поста користувача.</p>
+<p>Перевіряє:
+- користувач не може оцінювати власний пост,
+- користувач не може голосувати двічі за один пост.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>post_id</strong> (<em>int</em>) – ID поста</p></li>
+<li><p><strong>rate</strong> (<em>int</em>) – Значення рейтингу (1 або -1)</p></li>
+<li><p><strong>db</strong> (<em>sqlalchemy.orm.Session</em>) – SQLAlchemy сесія</p></li>
+<li><p><strong>user</strong> (<em>app.database.models.User</em>) – Поточний користувач</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Створений об’єкт Rating</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>HTTPException</strong> – Якщо пост власний або вже оцінений користувачем</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>app.database.models.Rating</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.repository.ratings.edit_rate">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.repository.ratings.</span></span><span class="sig-name descname"><span class="pre">edit_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rate_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/repository/ratings.html#edit_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.repository.ratings.edit_rate" title="Link to this definition"></a></dt>
+<dd><p>Оновлює існуючий рейтинг поста.</p>
+<p>Можливе редагування:
+- користувачем, який поставив рейтинг,
+- адміністратором або модератором.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rate_id</strong> (<em>int</em>) – ID рейтингу</p></li>
+<li><p><strong>new_rate</strong> (<em>int</em>) – Нове значення рейтингу</p></li>
+<li><p><strong>db</strong> (<em>sqlalchemy.orm.Session</em>) – SQLAlchemy сесія</p></li>
+<li><p><strong>user</strong> (<em>app.database.models.User</em>) – Поточний користувач</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Оновлений об’єкт Rating або None, якщо рейтинг не знайдено</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Type</em>[app.database.models.Rating] | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.repository.ratings.delete_rate">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.repository.ratings.</span></span><span class="sig-name descname"><span class="pre">delete_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rate_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/repository/ratings.html#delete_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.repository.ratings.delete_rate" title="Link to this definition"></a></dt>
+<dd><p>Видаляє рейтинг.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rate_id</strong> (<em>int</em>) – ID рейтингу</p></li>
+<li><p><strong>db</strong> (<em>sqlalchemy.orm.Session</em>) – SQLAlchemy сесія</p></li>
+<li><p><strong>user</strong> (<em>app.database.models.User</em>) – Поточний користувач</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Видалений об’єкт Rating або None, якщо рейтинг не знайдено</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Type</em>[app.database.models.Rating] | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.repository.ratings.show_ratings">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.repository.ratings.</span></span><span class="sig-name descname"><span class="pre">show_ratings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/repository/ratings.html#show_ratings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.repository.ratings.show_ratings" title="Link to this definition"></a></dt>
+<dd><p>Повертає список усіх рейтингів у системі.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>sqlalchemy.orm.Session</em>) – SQLAlchemy сесія</p></li>
+<li><p><strong>user</strong> (<em>app.database.models.User</em>) – Поточний користувач (для авторизації)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список об’єктів Rating</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<em>Type</em>[app.database.models.Rating]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.repository.ratings.show_my_ratings">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.repository.ratings.</span></span><span class="sig-name descname"><span class="pre">show_my_ratings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/repository/ratings.html#show_my_ratings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.repository.ratings.show_my_ratings" title="Link to this definition"></a></dt>
+<dd><p>Повертає всі рейтинги поточного користувача.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>sqlalchemy.orm.Session</em>) – SQLAlchemy сесія</p></li>
+<li><p><strong>user</strong> (<em>app.database.models.User</em>) – Поточний користувач</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список об’єктів Rating</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<em>Type</em>[app.database.models.Rating]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.repository.ratings.user_rate_post">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.repository.ratings.</span></span><span class="sig-name descname"><span class="pre">user_rate_post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/repository/ratings.html#user_rate_post"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.repository.ratings.user_rate_post" title="Link to this definition"></a></dt>
+<dd><p>Повертає рейтинг, який конкретний користувач поставив певному посту.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_id</strong> (<em>int</em>) – ID користувача</p></li>
+<li><p><strong>post_id</strong> (<em>int</em>) – ID поста</p></li>
+<li><p><strong>db</strong> (<em>sqlalchemy.orm.Session</em>) – SQLAlchemy сесія</p></li>
+<li><p><strong>user</strong> (<em>app.database.models.User</em>) – Поточний користувач</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Об’єкт Rating або None, якщо рейтинг не знайдено</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Type</em>[app.database.models.Rating] | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="hashtags-repository">
+<h2>Hashtags Repository<a class="headerlink" href="#hashtags-repository" title="Link to this heading"></a></h2>
+</section>
+<section id="transformations-repository">
+<h2>Transformations Repository<a class="headerlink" href="#transformations-repository" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="app_database.html" class="btn btn-neutral float-left" title="App Database" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="app_routers.html" class="btn btn-neutral float-right" title="Routers (API endpoints)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Natala Bodnarcuk.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
