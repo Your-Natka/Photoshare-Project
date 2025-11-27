@@ -20,8 +20,9 @@ from app.schemas import PostUpdate
 # Ініціалізація Cloudinary один раз
 init_cloudinary()
 
-async def get_posts(skip: int = 0, limit: int = 100, db: Session = None):
-    return await get_all_posts(skip=skip, limit=limit, db=db)
+async def get_all_posts(skip: int, limit: int, db):
+    posts = db.query(Post).offset(skip).limit(limit).all()
+    return list(posts)
 
 async def create_post(
     request: Request,

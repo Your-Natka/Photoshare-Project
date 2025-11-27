@@ -1,6 +1,9 @@
 import pytest
 from unittest.mock import AsyncMock, patch
 from app.database.connect_db import get_db
+from httpx import AsyncClient
+from app.main import app
+from app.database.models import User, UserRoleEnum
 
 # --------------------------------------
 # MOCK ASYNC DB SESSION
@@ -45,8 +48,12 @@ def fake_db():
 # --------------------------------------
 @pytest.fixture
 async def client():
-    from httpx import AsyncClient
-    from app.main import app
+    async def fake_current_user():
+        return User(id=1, username="tester", role=UserRoleEnum.user)
+
+    app.dependency_overrides = {}
+    app.dependency_overrides["auth_service.get_current_user"] = fake_current_user
+
     async with AsyncClient(app=app, base_url="http://test") as ac:
         yield ac
 

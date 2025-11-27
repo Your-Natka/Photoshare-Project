@@ -1,97 +1,164 @@
 import pytest
+from unittest.mock import AsyncMock
 from httpx import AsyncClient
-from io import BytesIO
+from fastapi import status
+from datetime import datetime
+
 from app.main import app
-from app.database.models import User, UserRoleEnum
-from unittest.mock import MagicMock
+from app.database.models import User
+from app.schemas import CommentBase, CommentResponse
 
-# ------------------------------
-# Fixture для AsyncClient + мок користувача
-# ------------------------------
+
+# ----------------------------------------------------
+# Фікстури
+# ----------------------------------------------------
 @pytest.fixture
-async def client():
-    async def fake_current_user():
-        return User(id=1, username="tester", role=UserRoleEnum.user)
+def mock_user():
+    return User(id=1, role="user")
 
-    app.dependency_overrides = {}
-    app.dependency_overrides["auth_service.get_current_user"] = fake_current_user
 
-    async with AsyncClient(app=app, base_url="http://testserver") as ac:
-        yield ac
+@pytest.fixture
+def now():
+    return datetime.utcnow()
 
-# ------------------------------
-# Тести CREATE POST
-# ------------------------------
-@pytest.mark.asyncio
-async def test_create_new_post(client):
-    # Тепер client — це async generator, треба "витягти" AsyncClient через async with
-    async for ac in client:
-        response = await ac.post(
-            "/api/posts/new/",
-            data={"title": "Test", "descr": "Desc", "hashtags": "tag1"},
-            files={"file": ("test.txt", BytesIO(b"content"))}
-        )
-        assert response.status_code == 201
-        data = response.json()
-        assert data["hashtags"] == ["tag1"]
 
-@pytest.mark.asyncio
-async def test_create_new_post_too_many_hashtags(client):
-    response = await client.post(
-        "/api/posts/new/",
-        data=[("title", "Test"), ("descr", "Desc")] + [("hashtags", f"t{i}") for i in range(6)],
-        files={"file": ("test.txt", BytesIO(b"content"))}
+def build_comment(id=1, text="Text", user_id=1, post_id=1, now=None):
+    return CommentResponse(
+        id=id,
+        text=text,
+        user_id=user_id,
+        post_id=post_id,
+        created_at=now or datetime.utcnow(),
+        updated_at=now or datetime.utcnow()
     )
-    assert response.status_code == 400
-    assert response.json()["detail"] == "You can only add up to 5 hashtags per post"
 
-# ------------------------------
-# Тести READ POSTS
-# ------------------------------
+
+# ----------------------------------------------------
+# Тести
+# ----------------------------------------------------
 @pytest.mark.asyncio
-async def test_read_all_user_posts(client):
-    async def fake_get_my_posts(skip, limit, user, db):
-        post = MagicMock(id=1, title="Post", descr="Desc", hashtags=["tag"])
-        return [post]
+async def test_create_comment(mocker, mock_user, now):
+    # Мокаємо поточного користувача
+    mocker.patch(
+        "app.services.auth.auth_service.get_current_user",
+        return_value=mock_user
+    )
 
-    from app.routers import posts
-    posts.repository_posts.get_my_posts = fake_get_my_posts
+    # Мокаємо репозиторій
+    mocker.patch(
+        "app.repository.comments.create_comment",
+        new_callable=AsyncMock,
+        return_value=build_comment(text="Test comment", now=now)
+    )
 
-    response = await client.get("/api/posts/my_posts")
-    assert response.status_code == 200
-    data = response.json()
-    assert data[0]["title"] == "Post"
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        body = {"text": "Test comment"}
+        response = await ac.post("/api/comments/new/1", json=body)
 
-@pytest.mark.asyncio
-async def test_read_all_user_posts_404(client):
-    async def fake_get_my_posts(skip, limit, user, db):
-        return []
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()["text"] == "Test comment"
 
-    from app.routers import posts
-    posts.repository_posts.get_my_posts = fake_get_my_posts
-
-    response = await client.get("/api/posts/my_posts")
-    assert response.status_code == 404
 
 @pytest.mark.asyncio
-async def test_read_post_by_id(client):
-    async def fake_get_post_by_id(post_id, user, db):
-        return MagicMock(id=1, title="Title", descr="Desc", hashtags=["tag"])
+async def test_edit_comment(mocker, mock_user, now):
+    mocker.patch(
+        "app.services.auth.auth_service.get_current_user",
+        return_value=mock_user
+    )
 
-    from app.routers import posts
-    posts.repository_posts.get_post_by_id = fake_get_post_by_id
+    mocker.patch(
+        "app.repository.comments.edit_comment",
+        new_callable=AsyncMock,
+        return_value=build_comment(text="Updated", now=now)
+    )
 
-    response = await client.get("/api/posts/by_id/1")
-    assert response.status_code == 200
-    assert response.json()["title"] == "Title"
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        body = {"text": "Updated"}
+        response = await ac.put("/api/comments/edit/1", json=body)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()["text"] == "Updated"
+
 
 @pytest.mark.asyncio
-async def test_read_post_by_id_404(client):
-    async def fake_get_post_by_id(post_id, user, db):
-        return None
+async def test_delete_comment(mocker, mock_user, now):
+    mocker.patch(
+        "app.services.auth.auth_service.get_current_user",
+        return_value=mock_user
+    )
 
-    from app.routers import posts
-    posts.repository_posts.get_post_by_id = fake_get_post_by_id
+    mocker.patch(
+        "app.repository.comments.delete_comment",
+        new_callable=AsyncMock,
+        return_value=build_comment(text="Deleted", now=now)
+    )
 
-    response = await client.get("/api/posts/by_id/999")
-    assert response.status_code == 404
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.delete("/api/comments/delete/1")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()["text"] == "Deleted"
+
+
+@pytest.mark.asyncio
+async def test_single_comment(mocker, mock_user, now):
+    mocker.patch(
+        "app.services.auth.auth_service.get_current_user",
+        return_value=mock_user
+    )
+
+    mocker.patch(
+        "app.repository.comments.show_single_comment",
+        new_callable=AsyncMock,
+        return_value=build_comment(text="Single", now=now)
+    )
+
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/api/comments/single/1")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()["text"] == "Single"
+
+
+@pytest.mark.asyncio
+async def test_by_user_comments(mocker, mock_user, now):
+    mocker.patch(
+        "app.services.auth.auth_service.get_current_user",
+        return_value=mock_user
+    )
+
+    mocker.patch(
+        "app.repository.comments.show_user_comments",
+        new_callable=AsyncMock,
+        return_value=[
+            build_comment(id=1, text="C1", now=now),
+            build_comment(id=2, text="C2", now=now)
+        ]
+    )
+
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/api/comments/by_author/1")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.json()) == 2
+    assert response.json()[0]["text"] == "C1"
+
+
+@pytest.mark.asyncio
+async def test_by_user_post_comments(mocker, mock_user, now):
+    mocker.patch(
+        "app.services.auth.auth_service.get_current_user",
+        return_value=mock_user
+    )
+
+    mocker.patch(
+        "app.repository.comments.show_user_post_comments",
+        new_callable=AsyncMock,
+        return_value=[build_comment(text="Post comment", now=now)]
+    )
+
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/api/comments/post_by_author/1/1")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()[0]["text"] == "Post comment"

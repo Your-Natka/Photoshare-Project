@@ -48,7 +48,7 @@ async def test_create_comment(mocker, mock_user, mock_db, comment_body):
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.post("/comments/new/1", json=comment_body.dict())
+        response = await ac.post("/api/comments/new/1", json=comment_body.dict())
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["text"] == "Test comment"
@@ -63,7 +63,7 @@ async def test_edit_comment(mocker, mock_user, mock_db, comment_body):
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.put("/comments/edit/1", json=comment_body.dict())
+        response = await ac.put("/api/comments/edit/1", json=comment_body.dict())
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["text"] == "Updated comment"
@@ -78,7 +78,7 @@ async def test_delete_comment(mocker, mock_user, mock_db):
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.delete("/comments/delete/1")
+        response = await ac.delete("/api/comments/delete/1")
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["text"] == "To delete"
@@ -93,7 +93,7 @@ async def test_single_comment(mocker, mock_user, mock_db):
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.get("/comments/single/1")
+        response = await ac.get("/api/comments/single/1")
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["text"] == "Single comment"
@@ -111,7 +111,7 @@ async def test_by_user_comments(mocker, mock_user, mock_db):
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.get("/comments/by_author/1")
+        response = await ac.get("/api/comments/by_author/1")
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 2
@@ -128,7 +128,7 @@ async def test_by_user_post_comments(mocker, mock_user, mock_db):
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.get("/comments/post_by_author/1/1")
+        response = await ac.get("/api/comments/post_by_author/1/1")
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json()[0]["text"] == "Post comment"
@@ -149,7 +149,7 @@ async def test_single_comment(mocker, mock_user, mock_db):
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.get("/comments/single/1")
+        response = await ac.get("/api/comments/single/1")
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["text"] == "Single comment"
@@ -173,7 +173,7 @@ async def test_by_user_comments(mocker, mock_user, mock_db):
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.get("/comments/by_author/1")
+        response = await ac.get("/api/comments/by_author/1")
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 2

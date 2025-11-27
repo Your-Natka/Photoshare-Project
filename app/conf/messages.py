@@ -7,7 +7,7 @@ messages.py — константи для повідомлень у PhotoShare A
 """
 
 # -------------------- WELCOME --------------------
-WELCOME_MESSAGE = "Hello! It is a PhotoShare API"
+WELCOME_MESSAGE = "Welcome to Photoshare!"
 
 # -------------------- DATABASE --------------------
 DB_CONFIG_ERROR = "Database is not configured correctly"
