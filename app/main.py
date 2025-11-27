@@ -10,13 +10,13 @@ from fastapi.staticfiles import StaticFiles
 from app.conf.config import settings
 from app.conf.messages import DB_CONFIG_ERROR, DB_CONNECT_ERROR, WELCOME_MESSAGE
 from app.database.connect_db import get_db
-from app.routes.auth import router as auth_router
-from app.routes.posts import router as post_router
-from app.routes.comments import router as comment_router
-from app.routes.ratings import router as rating_router
-from app.routes.transform_post import router as trans_router
-from app.routes.hashtags import router as hashtag_router
-from app.routes.users import router as users_router
+from app.routers.auth import router as auth_router
+from app.routers.posts import router as post_router
+from app.routers.comments import router as comment_router
+from app.routers.ratings import router as rating_router
+from app.routers.transform_post import router as trans_router
+from app.routers.hashtags import router as hashtag_router
+from app.routers.users import router as users_router
 
 app = FastAPI(title="Photoshare API", description="API for Photoshare project", version="1.0.0")
 

@@ -399,7 +399,7 @@ API буде доступне на:
 │ ├── main.py
 │ ├── database
 │ ├── repository
-│ ├── routes
+│ ├── routers
 │ ├── services
 │ ├── schemas.py
 │ └── ...

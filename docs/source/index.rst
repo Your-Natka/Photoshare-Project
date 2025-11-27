@@ -67,57 +67,57 @@ REST API repository Rating
   :show-inheritance:
 
 
-REST API routes Auth
+REST API routers Auth
 =========================
-.. automodule:: src.routes.auth
+.. automodule:: src.routers.auth
   :members:
   :undoc-members:
   :show-inheritance:
 
 
-REST API routes Users
+REST API routers Users
 =========================
-.. automodule:: src.routes.users
+.. automodule:: src.routers.users
   :members:
   :undoc-members:
   :show-inheritance:
 
 
-REST API routes Posts
+REST API routers Posts
 =========================
-.. automodule:: src.routes.posts
+.. automodule:: src.routers.posts
   :members:
   :undoc-members:
   :show-inheritance:
 
   
-REST API routes Transform posts
+REST API routers Transform posts
 ==================================
-.. automodule:: src.routes.transform_post
+.. automodule:: src.routers.transform_post
   :members:
   :undoc-members:
   :show-inheritance:
 
 
-REST API routes Hashtags
+REST API routers Hashtags
 ===========================
-.. automodule:: src.routes.hashtags
+.. automodule:: src.routers.hashtags
   :members:
   :undoc-members:
   :show-inheritance:
 
 
-REST API routes Comments
+REST API routers Comments
 ==============================
-.. automodule:: src.routes.comments
+.. automodule:: src.routers.comments
   :members:
   :undoc-members:
   :show-inheritance:
 
 
-REST API routes Ratings
+REST API routers Ratings
 ==============================
-.. automodule:: src.routes.ratings
+.. automodule:: src.routers.ratings
   :members:
   :undoc-members:
   :show-inheritance:

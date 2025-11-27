@@ -56,7 +56,7 @@ def mock_redis():
 # --------------------------------------
 @pytest.fixture(autouse=True)
 def mock_db():
-    with patch("app.routes.auth.get_db") as mock:
+    with patch("app.routers.auth.get_db") as mock:
         session = FakeAsyncSession()
         mock.return_value = session
         yield mock

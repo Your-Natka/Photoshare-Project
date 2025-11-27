@@ -8,19 +8,21 @@ from app.schemas import UserDb
 from app.database.models import User
 
 @pytest.mark.asyncio
-@patch("app.repository.users.get_user_by_email", new_callable=AsyncMock)
+@patch("app.routers.auth.send_email", new_callable=AsyncMock)
 @patch("app.repository.users.create_user", new_callable=AsyncMock)
-@patch("fastapi.BackgroundTasks.add_task", new_callable=MagicMock)
-async def test_register_user(mock_add_task, mock_create_user, mock_get_user):
+@patch("app.repository.users.get_user_by_email", new_callable=AsyncMock)
+async def test_register_user(mock_add_task, mock_create_user, mock_send_email):
     mock_get_user.return_value = None
-    mock_create_user.return_value = User(
-        id=1,
-        username="testuser",
-        email="test@example.com",
-        avatar=None,
-        role="user",
-        created_at=datetime.utcnow(),
-    )
+
+    class MockUser:
+        id = 1
+        username = "testuser"
+        email = "test@example.com"
+        avatar = None
+        role = "user"
+        created_at = "2024-01-01"
+
+    mock_create_user.return_value = MockUser()
 
     async with AsyncClient(app=app, base_url="http://testserver") as ac:
         payload = {
@@ -30,8 +32,11 @@ async def test_register_user(mock_add_task, mock_create_user, mock_get_user):
         }
         response = await ac.post("/api/auth/signup", json=payload)
 
-    assert response.status_code == 201
-    assert mock_add_task.called
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.json()["detail"] == "User successfully created"
+
+    # ключове!
+    mock_send_email.assert_awaited_once()
 
 @pytest.mark.asyncio
 @patch("app.repository.users.get_user_by_email", new_callable=AsyncMock)
