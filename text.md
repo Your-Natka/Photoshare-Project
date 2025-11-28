@@ -10,7 +10,11 @@ flyctl version
 
 Якщо не знайдено — встанови:
 
-macOS:
+Оновити macOS:
+
+brew upgrade flyctl
+
+Або якщо встановлювала curl-скриптом:
 
 brew install flyctl
 
@@ -113,7 +117,7 @@ neondb=>
 3️⃣ Перегляд даних у таблиці users
 SELECT \* FROM users;
 
-SELECT id, username, email, role, created_at FROM users;
+SELECT id, username, email, role, created_at, token FROM users;
 
 SELECT 
     u.id,
