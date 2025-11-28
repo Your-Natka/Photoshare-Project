@@ -1315,7 +1315,7 @@ GET /search/users?username=natusia
 
 pytest --cov=app --cov-report=term
 
-coverage report 
+coverage report
 
 ### 1️⃣5️⃣ Docker та Docker Compose
 

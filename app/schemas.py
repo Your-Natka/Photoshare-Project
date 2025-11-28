@@ -92,7 +92,7 @@ class HashtagResponse(HashtagModel):
     Відповідь з інформацією про хештег.
     """
     id: int
-    name: str
+    title: str   # <-- замість name
     user_id: int
     
     model_config = {"from_attributes": True}
