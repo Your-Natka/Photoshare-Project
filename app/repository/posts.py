@@ -6,7 +6,7 @@ posts.py — функції для роботи з постами у PhotoShare 
 
 from typing import List
 from datetime import datetime
-from fastapi import Request, UploadFile
+from fastapi import Request, UploadFile, HTTPException
 from faker import Faker
 from sqlalchemy import and_, func, or_
 from sqlalchemy.orm import Session
@@ -49,9 +49,17 @@ async def create_post(
     upload_result = cloudinary.uploader.upload(file.file, public_id=public_id, overwrite=True)
     url = upload_result.get("secure_url")
 
+    # tag_objs = []
+    # if hashtags:
+    #     tag_objs = get_hashtags([tag.strip() for tag in hashtags[0].split(",")], current_user, db)
     tag_objs = []
     if hashtags:
-        tag_objs = get_hashtags([tag.strip() for tag in hashtags[0].split(",")], current_user, db)
+        all_tags = []
+        for item in hashtags:
+            all_tags.extend([tag.strip() for tag in item.split(",") if tag.strip()])
+        if len(all_tags) > 5:
+            raise HTTPException(status_code=400, detail="You can only add up to 5 hashtags per post")
+        tag_objs = get_hashtags(all_tags, current_user, db)
 
     post = Post(
         image_url=url,
