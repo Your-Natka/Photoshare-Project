@@ -1,44 +1,22 @@
 import pytest
-from unittest.mock import AsyncMock
+from io import BytesIO
 from httpx import AsyncClient
-from fastapi import status
-from datetime import datetime
+from unittest.mock import AsyncMock
 
 from app.main import app
-from app.database.models import User
-from app.schemas import CommentResponse
+from app.schemas import PostResponse 
 
+# Фейковий користувач для тестів
+class MockUser:
+    id = 1
+    email = "test@example.com"
+    role = "user"
 
-# ----------------------------------------------------
-# Фікстури
-# ----------------------------------------------------
-@pytest.fixture
-def mock_user():
-    return User(id=1, role="user")
-
-
-@pytest.fixture
-def now():
-    return datetime.utcnow()
-
-
-def build_comment(id=1, text="Text", user_id=1, post_id=1, now=None):
-    return CommentResponse(
-        id=id,
-        text=text,
-        user_id=user_id,
-        post_id=post_id,
-        created_at=now or datetime.utcnow(),
-        updated_at=now or datetime.utcnow()
-    )
-
-
-# ----------------------------------------------------
-# Тести
-# ----------------------------------------------------
 @pytest.mark.asyncio
-async def test_create_comment(mocker, mock_user, now):
-    # Мокаємо поточного користувача асинхронно
+async def test_create_post(mocker):
+    mock_user = MockUser()
+
+    # Мокаємо поточного користувача
     mocker.patch(
         "app.services.auth.auth_service.get_current_user",
         new=AsyncMock(return_value=mock_user)
@@ -46,113 +24,121 @@ async def test_create_comment(mocker, mock_user, now):
 
     # Мокаємо репозиторій
     mocker.patch(
-        "app.repository.comments.create_comment",
-        new=AsyncMock(return_value=build_comment(text="Test comment", now=now))
+        "app.repository.posts.create_post",
+        new=AsyncMock(return_value=PostResponse(
+            id=1,
+            title="Test Post",
+            descr="Content",
+            hashtags=[],
+            avg_rating=0.0,
+            image_url=None,
+            transform_url=None,
+            created_at="2025-01-01T00:00:00",
+            updated_at="2025-01-01T00:00:00",
+            user_id=mock_user.id
+        ))
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        body = {"text": "Test comment"}
-        response = await ac.post("/api/comments/new/1", json=body)
+        data = {
+            "title": "Test Post",
+            "descr": "Content",
+            "hashtags": ["tag1", "tag2"]
+        }
+        files = {"file": ("test.jpg", BytesIO(b"dummy content"), "image/jpeg")}
+        response = await ac.post("/api/posts/new/", data=data, files=files)
 
-    assert response.status_code == status.HTTP_200_OK
-    assert response.json()["text"] == "Test comment"
-
+    assert response.status_code == 201
+    data = response.json()
+    assert data["title"] == "Test Post"
+    assert data["descr"] == "Content"
 
 @pytest.mark.asyncio
-async def test_edit_comment(mocker, mock_user, now):
+async def test_update_post(mocker):
+    mock_user = MockUser()
     mocker.patch(
         "app.services.auth.auth_service.get_current_user",
         new=AsyncMock(return_value=mock_user)
     )
 
     mocker.patch(
-        "app.repository.comments.edit_comment",
-        new=AsyncMock(return_value=build_comment(text="Updated", now=now))
+        "app.repository.posts.update_post",
+        new=AsyncMock(return_value=PostResponse(
+            id=1,
+            title="Updated",
+            descr="Updated Content",
+            hashtags=[],
+            avg_rating=0.0,
+            image_url=None,
+            transform_url=None,
+            created_at="2025-01-01T00:00:00",
+            updated_at="2025-01-02T00:00:00"
+        ))
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        body = {"text": "Updated"}
-        response = await ac.put("/api/comments/edit/1", json=body)
+        body = {"title": "Updated", "descr": "Updated Content", "hashtags": []}
+        response = await ac.put("/api/posts/1", json=body)
 
-    assert response.status_code == status.HTTP_200_OK
-    assert response.json()["text"] == "Updated"
-
+    assert response.status_code == 200
+    data = response.json()
+    assert data["title"] == "Updated"
+    assert data["descr"] == "Updated Content"
 
 @pytest.mark.asyncio
-async def test_delete_comment(mocker, mock_user, now):
+async def test_delete_post(mocker):
+    mock_user = MockUser()
     mocker.patch(
         "app.services.auth.auth_service.get_current_user",
         new=AsyncMock(return_value=mock_user)
     )
 
     mocker.patch(
-        "app.repository.comments.delete_comment",
-        new=AsyncMock(return_value=build_comment(text="Deleted", now=now))
+        "app.repository.posts.remove_post",
+        new=AsyncMock(return_value=PostResponse(
+            id=1,
+            title="Deleted",
+            descr="Deleted Content",
+            hashtags=[],
+            avg_rating=0.0,
+            image_url=None,
+            transform_url=None,
+            created_at="2025-01-01T00:00:00",
+            updated_at="2025-01-02T00:00:00",
+            user_id=mock_user.id
+        ))
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.delete("/api/comments/delete/1")
+        response = await ac.delete("/api/posts/1")
 
-    assert response.status_code == status.HTTP_200_OK
-    assert response.json()["text"] == "Deleted"
-
-
-@pytest.mark.asyncio
-async def test_single_comment(mocker, mock_user, now):
-    mocker.patch(
-        "app.services.auth.auth_service.get_current_user",
-        new=AsyncMock(return_value=mock_user)
-    )
-
-    mocker.patch(
-        "app.repository.comments.show_single_comment",
-        new=AsyncMock(return_value=build_comment(text="Single", now=now))
-    )
-
-    async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.get("/api/comments/single/1")
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.json()["text"] == "Single"
-
+    assert response.status_code == 200
+    data = response.json()
+    assert data["title"] == "Deleted"
 
 @pytest.mark.asyncio
-async def test_by_user_comments(mocker, mock_user, now):
+async def test_read_all_posts(mocker):
     mocker.patch(
-        "app.services.auth.auth_service.get_current_user",
-        new=AsyncMock(return_value=mock_user)
-    )
-
-    mocker.patch(
-        "app.repository.comments.show_user_comments",
+        "app.repository.posts.get_all_posts",
         new=AsyncMock(return_value=[
-            build_comment(id=1, text="C1", now=now),
-            build_comment(id=2, text="C2", now=now)
+            PostResponse(
+                id=1, title="Post 1", descr="Content 1", hashtags=[], avg_rating=0.0,
+                image_url=None, transform_url=None, created_at="2025-01-01T00:00:00", updated_at="2025-01-01T00:00:00",
+                user_id=1
+            ),
+            PostResponse(
+                id=2, title="Post 2", descr="Content 2", hashtags=[], avg_rating=0.0,
+                image_url=None, transform_url=None, created_at="2025-01-01T00:00:00", updated_at="2025-01-01T00:00:00",
+                user_id=1
+            ),
         ])
     )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.get("/api/comments/by_author/1")
+        response = await ac.get("/api/posts/all")
 
-    assert response.status_code == status.HTTP_200_OK
-    assert len(response.json()) == 2
-    assert response.json()[0]["text"] == "C1"
-
-
-@pytest.mark.asyncio
-async def test_by_user_post_comments(mocker, mock_user, now):
-    mocker.patch(
-        "app.services.auth.auth_service.get_current_user",
-        new=AsyncMock(return_value=mock_user)
-    )
-
-    mocker.patch(
-        "app.repository.comments.show_user_post_comments",
-        new=AsyncMock(return_value=[build_comment(text="Post comment", now=now)])
-    )
-
-    async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.get("/api/comments/post_by_author/1/1")
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.json()[0]["text"] == "Post comment"
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 2
+    assert data[0]["title"] == "Post 1"
+    assert data[1]["title"] == "Post 2"

@@ -9,6 +9,11 @@ from app.services.auth import auth_service
 async def client():
     async with AsyncClient(app=app, base_url="http://test") as ac:
         yield ac
+        
+@pytest.fixture
+async def async_client():
+    async with AsyncClient(app=app, base_url="http://test") as client:
+        yield client
 
 @pytest.fixture
 def user_data():
@@ -17,68 +22,74 @@ def user_data():
         "email": "test@example.com",
         "password": "testpassword123"
     }
-
+mock_user_data = {
+    "email": "test@example.com",
+    "username": "testuser",
+    "password": "hashedpassword",
+    "is_verify": False,
+    "is_active": True,
+    "refresh_token": None,
+}
 # ---------------------------------------------------------
 # SIGNUP
 # ---------------------------------------------------------
 @pytest.mark.asyncio
-async def test_register_user(client):
-    """Тест реєстрації нового користувача"""
-    user_data = {
-        "username": "testuser",
-        "email": "test@example.com",
-        "password": "password123"
-    }
-    response = await client.post("/api/auth/signup", json=user_data)
-    assert response.status_code == 201
-
-@pytest.mark.asyncio
-async def test_register_existing_email(monkeypatch, client, user_data):
-    """Користувач з таким email вже існує"""
-
-    monkeypatch.setattr(
+async def test_register_user(async_client, mocker):
+    # Мок репозиторію для створення користувача
+    mock_user = {"email": "test@example.com", "username": "testuser", "password": "hashed", "is_verify": False}
+    mocker.patch(
+        "app.repository.users.create_user",
+        return_value=mock_user
+    )
+    mocker.patch(
         "app.repository.users.get_user_by_email",
-        AsyncMock(return_value=True)
+        return_value=None
     )
 
-    response = await client.post("/api/auth/signup", json=user_data)  # <- тут await
-    assert response.status_code == 409
-    assert response.json()["detail"] == "Account already exists."
+    body = {"email": "test@example.com", "username": "testuser", "password": "123456"}
+    response = await async_client.post("/auth/signup", json=body)
 
+    assert response.status_code == 201
+    data = response.json()
+    assert data["user"]["email"] == "test@example.com"
+    
+    
 # ---------------------------------------------------------
 # LOGIN
 # ---------------------------------------------------------
 @pytest.mark.asyncio
-async def test_login_user(monkeypatch, client, user_data):
-    """Успішний логін"""
+async def test_login_user(async_client, mocker):
+    user = mock_user_data.copy()
+    user["is_verify"] = True
 
-    fake_user = {
-        "email": user_data["email"],
-        "password": user_data["password"], 
-        "is_verify": True,
-        "is_active": True
-    }
-
-    monkeypatch.setattr(
+    mocker.patch(
         "app.repository.users.get_user_by_email",
-        AsyncMock(return_value=fake_user)
+        new=AsyncMock(return_value=user)
     )
-
-    monkeypatch.setattr(
+    mocker.patch(
+        "app.services.auth.auth_service.verify_password",
+        return_value=True
+    )
+    mocker.patch(
+        "app.services.auth.auth_service.create_access_token",
+        new=AsyncMock(return_value="access_token")
+    )
+    mocker.patch(
+        "app.services.auth.auth_service.create_refresh_token",
+        new=AsyncMock(return_value="refresh_token")
+    )
+    mocker.patch(
         "app.repository.users.update_token",
-        AsyncMock(return_value=True)
+        new=AsyncMock(return_value=None)
     )
 
-    response = await client.post(
-        "/api/auth/login",
-        data={"username": user_data["email"], "password": user_data["password"]}
-    )
+    body = {"username": "test@example.com", "password": "123456"}
+    response = await async_client.post("/auth/login", data=body)
 
     assert response.status_code == 200
-    tokens = response.json()
-    assert "access_token" in tokens
-    assert "refresh_token" in tokens
-
+    data = response.json()
+    assert data["access_token"] == "access_token"
+    assert data["refresh_token"] == "refresh_token"
 
 @pytest.mark.asyncio
 async def test_login_wrong_password(monkeypatch, client, user_data):

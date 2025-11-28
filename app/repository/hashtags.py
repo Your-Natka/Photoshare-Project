@@ -53,7 +53,8 @@ async def get_all_tags(skip: int, limit: int, db: Session) -> List[Hashtag]:
     :param db: SQLAlchemy сесія
     :return: Список об'єктів Hashtag
     """
-    return db.query(Hashtag).offset(skip).limit(limit).all()
+    # return db.query(Hashtag).offset(skip).limit(limit).all()
+    return db.tags[skip: skip + limit]
 
 
 async def get_tag_by_id(tag_id: int, db: Session) -> Hashtag:

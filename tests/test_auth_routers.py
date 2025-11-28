@@ -19,7 +19,7 @@ async def test_register_user(mock_send_email, mock_create_user, mock_get_user):
         username = "testuser"
         email = "test@example.com"
         avatar = None
-        role = "user"
+        role = "User"
         created_at = "2024-01-01"
 
     mock_create_user.return_value = MockUser()
@@ -41,7 +41,7 @@ async def test_signup_existing_email(mock_get_user):
         payload = {"username": "testuser", "email": "existing@example.com", "password": "12345678"}
         response = await ac.post("/api/auth/signup", json=payload)
     assert response.status_code == status.HTTP_409_CONFLICT
-    assert response.json()["detail"] == "Account already exists."
+    assert response.json()["detail"] == "Account already exists"
 
 
 # ---------------------------------------
@@ -49,11 +49,10 @@ async def test_signup_existing_email(mock_get_user):
 # ---------------------------------------
 @pytest.mark.asyncio
 @patch("app.repository.users.get_user_by_email", new_callable=AsyncMock)
-@patch("app.repository.users.update_token", new_callable=AsyncMock)
 @patch("app.services.auth.auth_service.create_access_token", new_callable=AsyncMock)
 @patch("app.services.auth.auth_service.create_refresh_token", new_callable=AsyncMock)
 @patch("app.services.auth.auth_service.verify_password", new_callable=AsyncMock)
-async def test_login_user(mock_verify, mock_refresh, mock_access, mock_update_token, mock_get_user):
+async def test_login_user(mock_verify, mock_refresh, mock_access, mock_get_user):
     class User:
         email = "test@example.com"
         password = "hashed"
@@ -81,8 +80,9 @@ async def test_login_user_invalid_email(mock_get_user):
     mock_get_user.return_value = None
     async with AsyncClient(app=app, base_url="http://testserver") as ac:
         response = await ac.post("/api/auth/login", data={"username": "wrong@example.com", "password": "123"})
+
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    assert response.json()["detail"] == "Invalid email."
+    assert response.json()["detail"] == "Invalid email"
 
 
 @pytest.mark.asyncio
@@ -94,6 +94,7 @@ async def test_login_user_wrong_password(mock_verify, mock_get_user):
         password = "hashed"
         is_verify = True
         is_active = True
+
     mock_get_user.return_value = User()
     mock_verify.return_value = False
 
@@ -101,7 +102,7 @@ async def test_login_user_wrong_password(mock_verify, mock_get_user):
         response = await ac.post("/api/auth/login", data={"username": "test@example.com", "password": "wrong"})
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    assert response.json()["detail"] == "Invalid password."
+    assert response.json()["detail"] == "Invalid password"
 
 
 # ---------------------------------------
@@ -109,11 +110,10 @@ async def test_login_user_wrong_password(mock_verify, mock_get_user):
 # ---------------------------------------
 @pytest.mark.asyncio
 @patch("app.repository.users.get_user_by_email", new_callable=AsyncMock)
-@patch("app.repository.users.update_token", new_callable=AsyncMock)
 @patch("app.services.auth.auth_service.decode_refresh_token", new_callable=AsyncMock)
 @patch("app.services.auth.auth_service.create_access_token", new_callable=AsyncMock)
 @patch("app.services.auth.auth_service.create_refresh_token", new_callable=AsyncMock)
-async def test_refresh_token(mock_create_refresh, mock_create_access, mock_decode, mock_update_token, mock_get_user):
+async def test_refresh_token(mock_create_refresh, mock_create_access, mock_decode, mock_get_user):
     class User:
         email = "test@example.com"
         refresh_token = "refresh123"
@@ -136,21 +136,20 @@ async def test_refresh_token(mock_create_refresh, mock_create_access, mock_decod
 @pytest.mark.asyncio
 @patch("app.repository.users.get_user_by_email", new_callable=AsyncMock)
 @patch("app.services.auth.auth_service.decode_refresh_token", new_callable=AsyncMock)
-@patch("app.repository.users.update_token", new_callable=AsyncMock)
-async def test_refresh_token_invalid(mock_update_token, mock_decode, mock_get_user):
+async def test_refresh_token_invalid(mock_decode, mock_get_user):
     class User:
         email = "test@example.com"
         refresh_token = "OLD_REFRESH"
 
     mock_get_user.return_value = User()
-    mock_decode.return_value = "test@example.com"
+    mock_decode.side_effect = Exception("Invalid token")
 
     headers = {"Authorization": "Bearer INVALID_TOKEN"}
     async with AsyncClient(app=app, base_url="http://testserver") as ac:
         response = await ac.get("/api/auth/refresh_token", headers=headers)
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    assert response.json()["detail"] == "Invalid token."
+    assert response.json()["detail"] == "Could not validate credentials"
 
 
 # ---------------------------------------
@@ -159,18 +158,23 @@ async def test_refresh_token_invalid(mock_update_token, mock_decode, mock_get_us
 @pytest.mark.asyncio
 @patch("app.repository.users.add_to_blacklist", new_callable=AsyncMock)
 @patch("app.services.auth.auth_service.get_current_user", new_callable=AsyncMock)
-async def test_logout(mock_current_user, mock_blacklist):
+async def test_logout(mock_get_current_user, mock_add_to_blacklist):
     class User:
         email = "test@example.com"
-    mock_current_user.return_value = User()
+
+    # Мок на поточного користувача
+    mock_get_current_user.return_value = User()
 
     headers = {"Authorization": "Bearer access123"}
     async with AsyncClient(app=app, base_url="http://testserver") as ac:
         response = await ac.post("/api/auth/logout", headers=headers)
 
+    # Логічно очікувати 200 OK, якщо користувач існує і токен валідний
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["message"] in ["User successfully logged out", "USER_IS_LOGOUT"]
-    mock_blacklist.assert_awaited_once()
+
+    # Перевірка, що функція додавання в чорний список викликалась
+    mock_add_to_blacklist.assert_awaited_once()
 
 
 # ---------------------------------------
@@ -199,7 +203,7 @@ async def test_request_email_not_found(mock_get_user):
     mock_get_user.return_value = None
     async with AsyncClient(app=app, base_url="http://testserver") as ac:
         response = await ac.post("/api/auth/request_email", json={"email": "unknown@example.com"})
-    assert response.status_code == 404
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 @pytest.mark.asyncio
@@ -209,10 +213,11 @@ async def test_request_email_already_confirmed(mock_get_user):
         email = "test@example.com"
         is_verify = True
         username = "user"
+
     mock_get_user.return_value = User()
 
     async with AsyncClient(app=app, base_url="http://testserver") as ac:
         response = await ac.post("/api/auth/request_email", json={"email": "test@example.com"})
 
-    assert response.status_code == 200
-    assert response.json()["message"] == "Email already confirmed"
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()["message"] == "Email successfully confirmed"

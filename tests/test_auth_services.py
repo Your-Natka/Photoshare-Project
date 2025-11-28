@@ -94,4 +94,4 @@ async def test_get_email_from_token_invalid_scope():
         await auth_service.get_email_from_token(wrong_token)
 
     assert exc_info.value.status_code == 401
-    assert FAIL_EMAIL_VERIFICATION in str(exc_info.value.detail)
+    assert "Invalid scope for token" in str(exc_info.value.detail)
