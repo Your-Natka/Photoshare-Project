@@ -183,8 +183,7 @@ https://photoshare-project-1.fly.dev/docs
 https://photoshare-project-1.fly.dev/redoc
 
 
-
-Тести
+Тести: 
 coverage report -m --skip-covered
 coverage run -m pytest
 coverage report -m

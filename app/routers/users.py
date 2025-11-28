@@ -198,3 +198,24 @@ async def make_role_by_email(body: RequestRole, db: Session = Depends(get_db)):
     else:
         await repository_users.make_user_role(body.email, body.role, db)
         return {"message": f"{USER_CHANGE_ROLE_TO} {body.role.value}"}
+    
+# --------------------------------------------
+# ADMIN ACTIONS
+# --------------------------------------------
+
+@router.delete("/delete/{user_id}/", dependencies=[Depends(allowed_remove_user)])
+async def delete_user_by_id(user_id: int, db: Session = Depends(get_db)):
+    """
+    Видалити користувача за його ID.
+    Доступно лише ADMIN.
+
+    :param user_id: ID користувача
+    :param db: Сесія бази даних
+    :return: Повідомлення про успішне видалення
+    """
+    user = await repository_users.get_user_by_id(user_id, db)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+    
+    await repository_users.delete_user(user_id, db)
+    return {"message": "User deleted successfully"}

@@ -107,6 +107,21 @@ SELECT \* FROM users;
 
 SELECT id, username, email, role, created_at FROM users;
 
+SELECT 
+    u.id,
+    u.username,
+    u.email,
+    u.role,
+    u.created_at,
+    u.token,
+    COALESCE((
+        SELECT STRING_AGG(p.id::text, ', ')
+        FROM posts p
+        WHERE p.user_id = u.id
+    ), '') AS post_ids
+FROM users u
+ORDER BY u.id;
+
 4️⃣ Перегляд структури таблиці
 \d users
 

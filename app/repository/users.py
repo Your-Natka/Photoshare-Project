@@ -254,3 +254,19 @@ async def remove_from_blacklist(token: str, db: Session) -> None:
     if blacklist_token:
         db.delete(blacklist_token)
         db.commit()
+        
+async def get_user_by_id(user_id: int, db: Session) -> Optional[User]:
+    """
+    Повертає користувача за ID.
+    """
+    return db.query(User).filter(User.id == user_id).first()
+
+
+async def delete_user(user_id: int, db: Session) -> None:
+    """
+    Видаляє користувача за ID.
+    """
+    user = await get_user_by_id(user_id, db)
+    if user:
+        db.delete(user)
+        db.commit()
