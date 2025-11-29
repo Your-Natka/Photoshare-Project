@@ -110,10 +110,6 @@ neondb=>
 2️⃣ Перегляд усіх таблиць
 \dt
 
-Якщо хочеш побачити в конкретній схемі (часто public):
-
-\dt public.\*
-
 3️⃣ Перегляд даних у таблиці users
 SELECT \* FROM users;
 
@@ -124,8 +120,8 @@ SELECT
     u.username,
     u.email,
     u.role,
+    u.token FROM users,
     u.created_at,
-    u.token,
     COALESCE((
         SELECT STRING_AGG(p.id::text, ', ')
         FROM posts p
