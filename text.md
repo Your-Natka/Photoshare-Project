@@ -120,7 +120,6 @@ SELECT
     u.username,
     u.email,
     u.role,
-    u.token FROM users,
     u.created_at,
     COALESCE((
         SELECT STRING_AGG(p.id::text, ', ')
