@@ -85,7 +85,7 @@ PhotoShare дозволяє користувачам:
 - **Зберігання файлів**: Cloudinary
 - **Кеш та черги**: Redis
 - **Міграції**: Alembic
-- **Тестування**: Pytest, Coverage > 90%
+- **Тестування**: Pytest, Coverage 
 
 ---
 

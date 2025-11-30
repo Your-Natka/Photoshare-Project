@@ -1196,30 +1196,6 @@ DELETE /api/hashtags/del/{tag_id} — Remove Tag
 "message": "Tag deleted"
 }
 
-### 1️⃣2️⃣ Пошук
-
-Опис та основні маршрути:
-🔹 {GET} /search?q=keyword
-
-GET /search/by_tag/nature
-
-🔹 {GET} /search/by_tag/{tag}
-
-Фільтри: &sort=date або &sort=rating
-
-### 1️⃣3️⃣ Фільтрування:
-
-За датою:
-
-GET /search?q=flower&sort=date
-
-За рейтингом:
-
-GET /search?q=flower&sort=rating
-
-Для модератора:
-
-GET /search/users?username=natusia
 
 ### 1️⃣4️⃣ Тести
 
@@ -1234,12 +1210,12 @@ GET /search/users?username=natusia
 
 Тести CRUD фото/коментарів/рейтингів
 
-Покриття > 90%
+Покриття > 72%
 
 Запуск:
 
 pytest --cov=app --cov-report=term
-
+pytest --cov=app --cov-report=term-missing
 coverage report
 
 ### 1️⃣5️⃣ Docker та Docker Compose
